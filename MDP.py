@@ -1,75 +1,126 @@
-#Импортируем необходимые библеотеки
+# Импортируем необходимые библеотеки
 import win32com.client
 import pandas as pd
+import matplotlib as mp
+import numpy as np
 import sys
 
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QFileDialog
+ShablonRegime = 'Shablons/режим.rg2'
+ShablonTracktoria = 'Shablons/траектория утяжеления.ut2'
+ShablonSechenia = 'Shablons/сечения.sch'
 
-import form
+fluctuations = 30
 
-class ExampleApp(QtWidgets.QMainWindow, form.Ui_MainWindow):
-    def __init__(self):
-        # Это здесь нужно для доступа к переменным, методам
-        # и т.д. в файле design.py
-        super().__init__()
-        self.setupUi(self)  # Это нужно для инициализации нашего дизайна
-        self.connectActions()
 
-if __name__ == '__main__':  # Если мы запускаем файл напрямую, а не импортируем
-    app = QtWidgets.QApplication(sys.argv)  # Новый экземпляр QApplication
-    window = ExampleApp()  # Создаём объект класса ExampleApp
-    window.show()  # Показываем окно
-    app.exec_()
+# Утяжеление до конца, вычисление МДП по критерию
+def CalculationMDP(Kzap):
+    rastr.rgm('p')
+    if rastr.ut_utr('i') > 0:
+        rastr.ut_utr('')
+    MDP = 0
+    sechen = rastr.Tables('grline')
+    for i in range(sechen.Size):
+        MDP += abs(pl.Z(i))
+    return round(MDP * Kzap - fluctuations)
+
+
+# Обнуление режима, выставление необходимого контроля по I или V, перенос
+# данных по току
+def Control(criteria, AV=False):
+    rastr.Load(1, 'Rejime/regime.rg2', ShablonRegime)
+    # Увеличим количество итераций
+    ut_common = rastr.Tables('ut_common')
+    ut_common.Cols('iter').SetZ(0, 200)
+    # Подготовимся к включению контроля по току и напряжению при утяжелении
+    enable_contr = ut_common.Cols('enable_contr')
+    dis_i_contr = ut_common.Cols('dis_i_contr')
+    dis_p_contr = ut_common.Cols('dis_p_contr')
+    dis_v_contr = ut_common.Cols('dis_v_contr')
+    if (criteria == 'V'):
+        enable_contr_set = enable_contr.SetZ(0, 1)
+        # Отключим контроль I
+        dis_i_contr_set = dis_i_contr.SetZ(0, 1)
+        # Отключим контроль P
+        dis_p_contr_set = dis_p_contr.SetZ(0, 1)
+        # Включим контроль V
+        dis_v_contr_set = dis_v_contr.SetZ(0, 0)
+    elif (criteria == 'I'):
+        enable_contr_set = enable_contr.SetZ(0, 1)
+        dis_p_contr_set = dis_p_contr.SetZ(0, 1)
+        dis_v_contr_set = dis_v_contr.SetZ(0, 1)
+        dis_i_contr_set = dis_i_contr.SetZ(0, 0)
+        vetv = rastr.Tables('vetv')
+        i_dop_ob = vetv.Cols('i_dop')
+        i_dop_r = vetv.Cols('i_dop_r')
+        if AV:
+            i_dop_ob = vetv.Cols('i_dop_ob')
+            i_dop_r = vetv.Cols('i_dop_r_av')
+        contr_i = vetv.Cols('contr_i')
+        # Неизвестно почему, но данные по АДП находятся в расчетной чатсти,
+        # перенесем их в столбец с ДДТН_доп
+        for i in range(vetv.Size):
+            i_dop_ob.SetZ(i, i_dop_r.Z(i))
+            if i_dop_ob.Z(i) != 0:
+                contr_i.SetZ(i, 1)
+
+
+# Отключение необходимых линий
+def LineOFF(row):
+    vetv = rastr.Tables('vetv')
+    sta = vetv.Cols('sta')
+    ip = vetv.Cols('ip')
+    iq = vetv.Cols('iq')
+    np = vetv.Cols('np')
+    # Формируем послеаварийную схему
+    for i in range(vetv.Size):
+        if ip.Z(i) == row['ip'] and iq.Z(
+                i) == row['iq'] and np.Z(i) == row['np']:
+            sta.SetZ(i, 1)
 
 
 rastr = win32com.client.Dispatch("Astra.Rastr")
 
 # Загрузим файсл с режимом
-rastr.Load(1, 'regime.rg2', 'G:/rastrwin3/RastrWin3/SHABLON/режим.rg2')
+rastr.Load(1, 'Rejime/regime.rg2', ShablonRegime)
 # Загрузим файсл с траекторией
-rastr.Save('траектория утяжеления.ut2', 'G:/rastrwin3/RastrWin3/SHABLON/траектория утяжеления.ut2')
-
-rastr.Load(1, 'траектория утяжеления.ut2', 'G:/rastrwin3/RastrWin3/SHABLON/траектория утяжеления.ut2')
+rastr.Save('Rejime/траектория утяжеления.ut2', ShablonTracktoria)
+rastr.Load(1, 'Rejime/траектория утяжеления.ut2', ShablonTracktoria)
 # Загрузим файсл с сечением
-rastr.Save('сечения.sch', 'G:/rastrwin3/RastrWin3/SHABLON/сечения.sch')
-rastr.Load(1, 'сечения.sch', 'G:/rastrwin3/RastrWin3/SHABLON/сечения.sch')
-#Значение RG_KOD 1 соотвествует режиму "Загрузить"
-# Проверим файл
-result = rastr.rgm('p')
-#Вывод 0, следовательно расчет завершился успешно
-print(result)
+rastr.Save('Rejime/сечения.sch', ShablonSechenia)
+rastr.Load(1, 'Rejime/сечения.sch', ShablonSechenia)
 
-#Прочитаем файлы возмущений, сечения и траектории
-faults = pd.read_json('faults.json')
-flowgate = pd.read_json('flowgate.json')
-vector = pd.read_csv('vector.csv')
+# Прочитаем файлы возмущений, сечения и траектории
+faults = pd.read_json('Rejime/faults.json')
+flowgate = pd.read_json('Rejime/flowgate.json')
+vector = pd.read_csv('Rejime/vector.csv')
 
-
-
-
-
+faults = faults.T
 flowgate = flowgate.T
-print(flowgate)
-
 
 LoadTrajectory = vector[vector['variable'] == 'pn']
-LoadTrajectory = LoadTrajectory.rename(columns = {'variable':'pn', 'value':'pn_value', 'tg':'pn_tg'})
+LoadTrajectory = LoadTrajectory.rename(
+    columns={
+        'variable': 'pn',
+        'value': 'pn_value',
+        'tg': 'pn_tg'})
 GenTrajectory = vector[vector['variable'] == 'pg']
-GenTrajectory = GenTrajectory.rename(columns = {'variable':'pg', 'value':'pg_value', 'tg':'pg_tg'})
+GenTrajectory = GenTrajectory.rename(
+    columns={
+        'variable': 'pg',
+        'value': 'pg_value',
+        'tg': 'pg_tg'})
 
+vector = pd.merge(left=GenTrajectory, right=LoadTrajectory,
+                  left_on='node', right_on='node', how='outer').fillna(0)
 
-vector = pd.merge(left = GenTrajectory, right = LoadTrajectory,
-                              left_on = 'node', right_on = 'node', how = 'outer').fillna(0)
-
-
-#Таблица траектории утяжеления
+# Таблица траектории утяжеления
 ut_node = rastr.Tables('ut_node')
 tip = ut_node.Cols('tip')
 ny = ut_node.Cols('ny')
 pn = ut_node.Cols('pn')
 pg = ut_node.Cols('pg')
 tg = ut_node.Cols('tg')
+
 i = 0
 for index, row in vector.iterrows():
     rastr.Tables('ut_node').AddRow()
@@ -81,11 +132,9 @@ for index, row in vector.iterrows():
         rastr.Tables('ut_node').Cols('pn').SetZ(i, row['pn_value'])
         rastr.Tables('ut_node').Cols('tg').SetZ(i, row['pn_tg'])
     i = i + 1
-rastr.Save('траектория утяжеления1.ut2', 'G:/rastrwin3/RastrWin3/SHABLON/траектория утяжеления.ut2')
-ut_node.Size
+rastr.Save('Rejime/траектория утяжеления1.ut2', ShablonTracktoria)
 
-
-#Таблица сечений
+# Таблица сечений
 sechen = rastr.Tables('grline')
 ns = sechen.Cols('ns')
 ip = sechen.Cols('ip')
@@ -100,27 +149,55 @@ for index, row in flowgate.iterrows():
     ip.SetZ(i, row['ip'])
     iq.SetZ(i, row['iq'])
     i += 1
-rastr.Save('сечения.sch', 'G:/rastrwin3/RastrWin3/SHABLON/сечения.sch')
-(sechen.Size)
+rastr.Save('Rejime/сечения.sch', ShablonSechenia)
 
-#Обеспечение нормативного коэффициента запаса статической апериодической
-#устойчивости по активной мощности в контролируемом сечении в нормальной схеме.
+# Обеспечение нормативного коэффициента запаса статической апериодической
+# устойчивости по активной мощности в контролируемом сечении в нормальной
+# схеме.
+Control('P')
+MDP_1 = CalculationMDP(0.8)
+print(MDP_1)
 
-rastr.Load(1, 'regime.rg2', 'G:/rastrwin3/RastrWin3/SHABLON/режим.rg2')
-ut_common = rastr.Tables('ut_common')
+# Обеспечение нормативного коэффициента запаса
+# статической устойчивости по напряжению в узлах нагрузки в нормальной схеме.
+Control('V')
+MDP_2 = CalculationMDP(1)
+print(MDP_2)
 
-I_max = ut_common.Cols('iter')
-I_max.SetZ(0, 200)
+# Обеспечение нормативного коэффициента запаса
+# статической апериодической устойчивости
+# по активной мощности в контролируемом сечении в
+# послеаварийных режимах после нормативных возмущений.
+for index, row in faults.iterrows():
+    Control('P')
+    # Отключим линию
+    LineOFF(row)
+    # Определим значение перетока
+    MDP_3 = CalculationMDP(0.92)
+    print(MDP_3)
 
-if rastr.ut_utr('i') > 0:
-    rastr.ut_utr('')
-print(rastr.rgm('p'))
-#Определим  значение перетока
-i = 0
-MDP = 0
-while i < sechen.Size:
-    MDP +=  abs(pl.Z(i))
-    i += 1
-MDP_1 = round(MDP * 0.8  - 30)
-print (MDP_1)
+# Обеспечение нормативного коэффициента запаса статической
+# устойчивости по напряжению в узлах нагрузки в послеаварийных режимах
+# после нормативных возмущений.
+# Итерируемся по строкам в датафрейме с нормативными возмущениями
+for index, row in faults.iterrows():
+    Control('V')
+    LineOFF(row)
+    # Определим значение перетока
+    MDP_4 = CalculationMDP(1)
+    print(MDP_4)
 
+# Токое в норм схеме
+# Определим значение перетока
+Control('I')
+MDP_5_1 = CalculationMDP(1)
+print(MDP_5_1)
+
+# Токое в ПАр
+# Определим значение перетока
+for index, row in faults.iterrows():
+    Control('I', True)
+    LineOFF(row)
+    # Определим значение перетока
+    MDP_5_2 = CalculationMDP(1)
+    print(MDP_5_2)
