@@ -13,10 +13,7 @@ authors: Tamoshkin Ivan and Mizev Artem
 | -bg | Путь к json файлу с сечениями |
 | -outages | Путь к json файлу с возмущениями |
 | -pfvv | Путь к csv файлу с нормативными возмущениями |
-### Пример использования
-```sh
-MaxPowerFlow -rg2 "Tests\assets\regime.rg2" -pfvv "Tests\assets\vector.csv" -rg2template "src\assets\rastr_templates\режим.rg2" -bg "Tests\assets\flowgate.json" -outages "Tests\assets\faults.json" 
-```
+В директорию shablons необходимо поместить шаблон режима, в директории regime располагаются файлы режима и графики, также туда сохраняются файлы сечений и траектории.  
 #### Результаты:
 ```sh
 • 20% Pmax запас в нормальном режиме:     2217
