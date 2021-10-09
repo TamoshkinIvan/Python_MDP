@@ -4,7 +4,7 @@ import pandas as pd
 from pandas import DataFrame
 import control
 import line_off
-
+from typing import Optional
 shablon_regime = 'Shablons/режим.rg2'
 shablon_tracktoria = 'Shablons/траектория утяжеления.ut2'
 shablon_sechenia = 'Shablons/сечения.sch'
@@ -24,7 +24,7 @@ def collector_mdp() -> float:
 
 
 # Утяжеление до конца, вычисление МДП по критерию
-def calculation_mdp(k_zap: float, row: DataFrame, av: bool = False):
+def calculation_mdp(k_zap: float, row: Optional[DataFrame], av: bool = False):
     """
     Функция расчитывает предельный переток
     k_zap - коэффициент запаса
