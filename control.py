@@ -3,7 +3,15 @@ from win32com.client import Dispatch
 
 # Обнуление режима, выставление необходимого контроля по I или V, перенос
 # данных по току
-def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, av=False):
+def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, av=False) -> None:
+    """
+    Функция для выставления контролируемого параметра
+    в процессе утяжеления
+    rastr - рассчитываемый режим
+    shablon_regime - шаблон режима
+    criteria - критерий расчета
+    av - индикатор расчета для ПАР
+    """
     rastr.Load(1, 'regime/regime.rg2', shablon_regime)
     # Увеличим количество итераций
     ut_common = rastr.Tables('ut_common')

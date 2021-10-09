@@ -4,6 +4,11 @@ from win32com.client import Dispatch
 
 
 def line_off(rastr: Dispatch, row: DataFrame):
+    """
+    Функция используемая для отключения линий
+    rastr - рассчитываемый режим
+    row - DatаFrame с отключаемой линией
+    """
     vetv = rastr.Tables('vetv')
     sta = vetv.Cols('sta')
     ip = vetv.Cols('ip')

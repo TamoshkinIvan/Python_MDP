@@ -14,6 +14,9 @@ fluctuations = 30
 
 #Сбор данных по перетокам в сечении
 def collector_mdp() -> float:
+    """
+    функция определяет переток по сечению
+    """
     mdp = 0
     sechen = rastr.Tables('grline')
     for i in range(sechen.Size):
@@ -23,6 +26,13 @@ def collector_mdp() -> float:
 
 # Утяжеление до конца, вычисление МДП по критерию
 def calculation_mdp(k_zap: float, row: DataFrame, av: bool = False):
+    """
+    Функция расчитывает предельный переток
+    k_zap - коэффициент запаса
+    row - отключаемый элемент
+    av - ПАР
+    return - возвращает предельный переток по заданному критерию
+    """
     rastr.rgm('p')
     if rastr.ut_utr('i') > 0:
         rastr.ut_utr('')
