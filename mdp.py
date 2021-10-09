@@ -1,6 +1,7 @@
 # Импортируем необходимые библеотеки
 import win32com.client
 import pandas as pd
+from pandas import DataFrame
 import control
 import line_off
 
@@ -11,16 +12,38 @@ shablon_sechenia = 'Shablons/сечения.sch'
 fluctuations = 30
 
 
-# Утяжеление до конца, вычисление МДП по критерию
-def calculation_mdp(k_zap: float):
-    rastr.rgm('p')
-    if rastr.ut_utr('i') > 0:
-        rastr.ut_utr('')
+#Сбор данных по перетокам в сечении
+def collector_mdp() -> float:
     mdp = 0
     sechen = rastr.Tables('grline')
     for i in range(sechen.Size):
         mdp += abs(pl.Z(i))
-    return round(mdp * k_zap - fluctuations)
+    return mdp
+
+
+# Утяжеление до конца, вычисление МДП по критерию
+def calculation_mdp(k_zap: float, row: DataFrame, av: bool = False):
+    rastr.rgm('p')
+    if rastr.ut_utr('i') > 0:
+        rastr.ut_utr('')
+    mdp = collector_mdp()
+    if av:
+        tpf = collector_mdp()
+        mdp *= k_zap
+        toggle = rastr.GetToggle()
+        j = 1
+        while tpf > mdp:
+            toggle.MoveOnPosition(len(toggle.GetPositions()) - j)
+            tpf = collector_mdp()
+            j += 1
+        vetv = rastr.Tables('vetv')
+        vetv.SetSel('ip={_ip}&iq={_iq}&np={_np}'.format(_ip=row['ip'], _iq=row['iq'], _np=row['np']))
+        vetv.Cols('sta').Calc(0)
+        rastr.rgm('p')
+        tpf = collector_mdp()
+        return round(tpf - fluctuations)
+    else:
+        return round(mdp * k_zap - fluctuations)
 
 
 rastr = win32com.client.Dispatch("Astra.Rastr")
@@ -100,49 +123,52 @@ rastr.Save('regime/сечения.sch', shablon_sechenia)
 # устойчивости по активной мощности в контролируемом сечении в нормальной
 # схеме.
 control.control(rastr, shablon_regime, 'P')
-mdp_1 = calculation_mdp(0.8)
-print(mdp_1)
+mdp_1 = calculation_mdp(0.8, None)
+print("20% Pmax запас в нормальном режиме: " + str(mdp_1))
 
 # Обеспечение нормативного коэффициента запаса
 # статической устойчивости по напряжению в узлах нагрузки в нормальной схеме.
 control.control(rastr, shablon_regime, 'V')
-mdp_2 = calculation_mdp(1)
-print(mdp_2)
+mdp_2 = calculation_mdp(1, None)
+print("15% Ucr запас в нормальном режиме: " + str(mdp_2))
 
 # Обеспечение нормативного коэффициента запаса
 # статической апериодической устойчивости
 # по активной мощности в контролируемом сечении в
 # послеаварийных режимах после нормативных возмущений.
+mdp_3 = []
 for index, row in faults.iterrows():
     control.control(rastr, shablon_regime, 'P')
     # Отключим линию
     line_off.line_off(rastr, row)
     # Определим значение перетока
-    mdp_3 = calculation_mdp(0.92)
-    print(mdp_3)
+    mdp_3.append(calculation_mdp(0.92, row, True))
+print("8% Pmax запас в послеаварийном режиме: " + str(min(mdp_3)))
 
 # Обеспечение нормативного коэффициента запаса статической
 # устойчивости по напряжению в узлах нагрузки в послеаварийных режимах
 # после нормативных возмущений.
 # Итерируемся по строкам в датафрейме с нормативными возмущениями
+mdp_4 = []
 for index, row in faults.iterrows():
-    control.control(rastr, shablon_regime, 'V')
+    control.control(rastr, shablon_regime, 'V', True)
     line_off.line_off(rastr, row)
     # Определим значение перетока
-    mdp_4 = calculation_mdp(1)
-    print(mdp_4)
+    mdp_4.append(calculation_mdp(1, row, True))
+print("10% Ucr запас в послеаварийном режиме: " + str(min(mdp_4)))
 
 # Токое в норм схеме
 # Определим значение перетока
 control.control(rastr, shablon_regime, 'I')
-mdp_5_1 = calculation_mdp(1)
-print(mdp_5_1)
+mdp_5_1 = calculation_mdp(1, None)
+print("ДДТН в нормальном режиме: " + str(mdp_5_1))
 
 # Токое в ПАр
 # Определим значение перетока
+mdp_5_2 = []
 for index, row in faults.iterrows():
     control.control(rastr, shablon_regime, 'I', True)
     line_off.line_off(rastr, row)
     # Определим значение перетока
-    mdp_5_2 = calculation_mdp(1)
-    print(mdp_5_2)
+    mdp_5_2.append(calculation_mdp(1, row, True))
+print("АДТН в послеаварийном режиме: " + str(min(mdp_5_2)))
