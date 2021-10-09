@@ -3,7 +3,8 @@ from win32com.client import Dispatch
 
 # Обнуление режима, выставление необходимого контроля по I или V, перенос
 # данных по току
-def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, av=False) -> None:
+def control(rastr: Dispatch, shablon_regime: Dispatch,
+            criteria: str, av=False) -> None:
     """
     Функция для выставления контролируемого параметра
     в процессе утяжеления

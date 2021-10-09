@@ -5,14 +5,13 @@ from pandas import DataFrame
 import control
 import line_off
 
-
 shablon_regime = 'Shablons/режим.rg2'
 shablon_tracktoria = 'Shablons/траектория утяжеления.ut2'
 shablon_sechenia = 'Shablons/сечения.sch'
 fluctuations = 30
 
 
-#Сбор данных по перетокам в сечении
+# Сбор данных по перетокам в сечении
 def collector_mdp() -> float:
     """
     функция определяет переток по сечению
@@ -47,7 +46,9 @@ def calculation_mdp(k_zap: float, row: DataFrame, av: bool = False):
             tpf = collector_mdp()
             j += 1
         vetv = rastr.Tables('vetv')
-        vetv.SetSel('ip={_ip}&iq={_iq}&np={_np}'.format(_ip=row['ip'], _iq=row['iq'], _np=row['np']))
+        vetv.SetSel('ip={_ip}&iq={_iq}&np={_np}'.format(_ip=row['ip'],
+                                                        _iq=row['iq'],
+                                                        _np=row['np']))
         vetv.Cols('sta').Calc(0)
         rastr.rgm('p')
         tpf = collector_mdp()
