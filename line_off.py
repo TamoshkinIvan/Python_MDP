@@ -1,5 +1,5 @@
 # Отключение необходимых линий
-def LineOFF(rastr, row):
+def line_off(rastr, row):
     vetv = rastr.Tables('vetv')
     sta = vetv.Cols('sta')
     ip = vetv.Cols('ip')

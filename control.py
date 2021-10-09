@@ -1,7 +1,7 @@
 # Обнуление режима, выставление необходимого контроля по I или V, перенос
 # данных по току
-def Control(rastr,ShablonRegime, criteria, AV=False):
-    rastr.Load(1, 'Rejime/regime.rg2', ShablonRegime)
+def control(rastr, shablon_regime, criteria, AV=False):
+    rastr.Load(1, 'regime/regime.rg2', shablon_regime)
     # Увеличим количество итераций
     ut_common = rastr.Tables('ut_common')
     ut_common.Cols('iter').SetZ(0, 200)

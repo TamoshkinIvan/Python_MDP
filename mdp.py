@@ -1,61 +1,61 @@
 # Импортируем необходимые библеотеки
 import win32com.client
 import pandas as pd
-import Control
+import control
 import line_off
 
 
-ShablonRegime = 'Shablons/режим.rg2'
-ShablonTracktoria = 'Shablons/траектория утяжеления.ut2'
-ShablonSechenia = 'Shablons/сечения.sch'
+shablon_regime = 'Shablons/режим.rg2'
+shablon_tracktoria = 'Shablons/траектория утяжеления.ut2'
+shablon_sechenia = 'Shablons/сечения.sch'
 fluctuations = 30
 
 
 # Утяжеление до конца, вычисление МДП по критерию
-def CalculationMDP(Kzap):
+def calculation_mdp(k_zap):
     rastr.rgm('p')
     if rastr.ut_utr('i') > 0:
         rastr.ut_utr('')
-    MDP = 0
+    mdp = 0
     sechen = rastr.Tables('grline')
     for i in range(sechen.Size):
-        MDP += abs(pl.Z(i))
-    return round(MDP * Kzap - fluctuations)
+        mdp += abs(pl.Z(i))
+    return round(mdp * k_zap - fluctuations)
 
 
 rastr = win32com.client.Dispatch("Astra.Rastr")
 
 # Загрузим файсл с режимом
-rastr.Load(1, 'Rejime/regime.rg2', ShablonRegime)
+rastr.Load(1, 'regime/regime.rg2', shablon_regime)
 # Загрузим файсл с траекторией
-rastr.Save('Rejime/траектория утяжеления.ut2', ShablonTracktoria)
-rastr.Load(1, 'Rejime/траектория утяжеления.ut2', ShablonTracktoria)
+rastr.Save('regime/траектория утяжеления.ut2', shablon_tracktoria)
+rastr.Load(1, 'regime/траектория утяжеления.ut2', shablon_tracktoria)
 # Загрузим файсл с сечением
-rastr.Save('Rejime/сечения.sch', ShablonSechenia)
-rastr.Load(1, 'Rejime/сечения.sch', ShablonSechenia)
+rastr.Save('regime/сечения.sch', shablon_sechenia)
+rastr.Load(1, 'regime/сечения.sch', shablon_sechenia)
 
 # Прочитаем файлы возмущений, сечения и траектории
-faults = pd.read_json('Rejime/faults.json')
-flowgate = pd.read_json('Rejime/flowgate.json')
-vector = pd.read_csv('Rejime/vector.csv')
+faults = pd.read_json('regime/faults.json')
+flowgate = pd.read_json('regime/flowgate.json')
+vector = pd.read_csv('regime/vector.csv')
 
 faults = faults.T
 flowgate = flowgate.T
 
-LoadTrajectory = vector[vector['variable'] == 'pn']
-LoadTrajectory = LoadTrajectory.rename(
+load_trajectory = vector[vector['variable'] == 'pn']
+load_trajectory = load_trajectory.rename(
     columns={
         'variable': 'pn',
         'value': 'pn_value',
         'tg': 'pn_tg'})
-GenTrajectory = vector[vector['variable'] == 'pg']
-GenTrajectory = GenTrajectory.rename(
+gen_trajectory = vector[vector['variable'] == 'pg']
+gen_trajectory = gen_trajectory.rename(
     columns={
         'variable': 'pg',
         'value': 'pg_value',
         'tg': 'pg_tg'})
 
-vector = pd.merge(left=GenTrajectory, right=LoadTrajectory,
+vector = pd.merge(left=gen_trajectory, right=load_trajectory,
                   left_on='node', right_on='node', how='outer').fillna(0)
 
 # Таблица траектории утяжеления
@@ -77,7 +77,7 @@ for index, row in vector.iterrows():
         rastr.Tables('ut_node').Cols('pn').SetZ(i, row['pn_value'])
         rastr.Tables('ut_node').Cols('tg').SetZ(i, row['pn_tg'])
     i = i + 1
-rastr.Save('Rejime/траектория утяжеления1.ut2', ShablonTracktoria)
+rastr.Save('regime/траектория утяжеления1.ut2', shablon_tracktoria)
 
 # Таблица сечений
 sechen = rastr.Tables('grline')
@@ -94,55 +94,56 @@ for index, row in flowgate.iterrows():
     ip.SetZ(i, row['ip'])
     iq.SetZ(i, row['iq'])
     i += 1
-rastr.Save('Rejime/сечения.sch', ShablonSechenia)
+rastr.Save('regime/сечения.sch', shablon_sechenia)
 
 # Обеспечение нормативного коэффициента запаса статической апериодической
 # устойчивости по активной мощности в контролируемом сечении в нормальной
 # схеме.
-Control.Control(rastr, ShablonRegime, 'P')
-MDP_1 = CalculationMDP(0.8)
-print(MDP_1)
+control.control(rastr, shablon_regime, 'P')
+mdp_1 = calculation_mdp(0.8)
+print(mdp_1)
 
 # Обеспечение нормативного коэффициента запаса
 # статической устойчивости по напряжению в узлах нагрузки в нормальной схеме.
-Control.Control(rastr, ShablonRegime, 'V')
-MDP_2 = CalculationMDP(1)
-print(MDP_2)
+control.control(rastr, shablon_regime, 'V')
+mdp_2 = calculation_mdp(1)
+print(mdp_2)
 
 # Обеспечение нормативного коэффициента запаса
 # статической апериодической устойчивости
 # по активной мощности в контролируемом сечении в
 # послеаварийных режимах после нормативных возмущений.
 for index, row in faults.iterrows():
-    Control.Control(rastr, ShablonRegime, 'P')
+    control.control(rastr, shablon_regime, 'P')
     # Отключим линию
-    line_off.LineOFF(rastr, row)
+    line_off.line_off(rastr, row)
     # Определим значение перетока
-    MDP_3 = CalculationMDP(0.92)
-    print(MDP_3)
+    mdp_3 = calculation_mdp(0.92)
+    print(mdp_3)
+    print("1")
 
 # Обеспечение нормативного коэффициента запаса статической
 # устойчивости по напряжению в узлах нагрузки в послеаварийных режимах
 # после нормативных возмущений.
 # Итерируемся по строкам в датафрейме с нормативными возмущениями
 for index, row in faults.iterrows():
-    Control.Control(rastr, ShablonRegime, 'V')
-    line_off.LineOFF(rastr, row)
+    control.control(rastr, shablon_regime, 'V')
+    line_off.line_off(rastr, row)
     # Определим значение перетока
-    MDP_4 = CalculationMDP(1)
-    print(MDP_4)
+    mdp_4 = calculation_mdp(1)
+    print(mdp_4)
 
 # Токое в норм схеме
 # Определим значение перетока
-Control.Control(rastr, ShablonRegime, 'I')
-MDP_5_1 = CalculationMDP(1)
-print(MDP_5_1)
+control.control(rastr, shablon_regime, 'I')
+mdp_5_1 = calculation_mdp(1)
+print(mdp_5_1)
 
 # Токое в ПАр
 # Определим значение перетока
 for index, row in faults.iterrows():
-    Control.Control(rastr, ShablonRegime, 'I', True)
-    line_off.LineOFF(rastr, row)
+    control.control(rastr, shablon_regime, 'I', True)
+    line_off.line_off(rastr, row)
     # Определим значение перетока
-    MDP_5_2 = CalculationMDP(1)
-    print(MDP_5_2)
+    mdp_5_2 = calculation_mdp(1)
+    print(mdp_5_2)
