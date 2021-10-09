@@ -12,7 +12,7 @@ fluctuations = 30
 
 
 # Утяжеление до конца, вычисление МДП по критерию
-def calculation_mdp(k_zap):
+def calculation_mdp(k_zap: float):
     rastr.rgm('p')
     if rastr.ut_utr('i') > 0:
         rastr.ut_utr('')
@@ -120,7 +120,6 @@ for index, row in faults.iterrows():
     # Определим значение перетока
     mdp_3 = calculation_mdp(0.92)
     print(mdp_3)
-    print("1")
 
 # Обеспечение нормативного коэффициента запаса статической
 # устойчивости по напряжению в узлах нагрузки в послеаварийных режимах

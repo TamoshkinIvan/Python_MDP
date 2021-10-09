@@ -1,5 +1,9 @@
 # Отключение необходимых линий
-def line_off(rastr, row):
+from pandas import DataFrame
+from win32com.client import Dispatch
+
+
+def line_off(rastr: Dispatch, row: DataFrame):
     vetv = rastr.Tables('vetv')
     sta = vetv.Cols('sta')
     ip = vetv.Cols('ip')

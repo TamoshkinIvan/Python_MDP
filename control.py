@@ -1,6 +1,9 @@
+from win32com.client import Dispatch
+
+
 # Обнуление режима, выставление необходимого контроля по I или V, перенос
 # данных по току
-def control(rastr, shablon_regime, criteria, AV=False):
+def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, AV=False):
     rastr.Load(1, 'regime/regime.rg2', shablon_regime)
     # Увеличим количество итераций
     ut_common = rastr.Tables('ut_common')
