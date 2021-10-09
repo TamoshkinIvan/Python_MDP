@@ -3,7 +3,7 @@ from win32com.client import Dispatch
 
 # Обнуление режима, выставление необходимого контроля по I или V, перенос
 # данных по току
-def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, AV=False):
+def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, av=False):
     rastr.Load(1, 'regime/regime.rg2', shablon_regime)
     # Увеличим количество итераций
     ut_common = rastr.Tables('ut_common')
@@ -13,7 +13,7 @@ def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, AV=False):
     dis_i_contr = ut_common.Cols('dis_i_contr')
     dis_p_contr = ut_common.Cols('dis_p_contr')
     dis_v_contr = ut_common.Cols('dis_v_contr')
-    if (criteria == 'V'):
+    if criteria == 'V':
         enable_contr_set = enable_contr.SetZ(0, 1)
         # Отключим контроль I
         dis_i_contr_set = dis_i_contr.SetZ(0, 1)
@@ -21,7 +21,7 @@ def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, AV=False):
         dis_p_contr_set = dis_p_contr.SetZ(0, 1)
         # Включим контроль V
         dis_v_contr_set = dis_v_contr.SetZ(0, 0)
-    elif (criteria == 'I'):
+    elif criteria == 'I':
         enable_contr_set = enable_contr.SetZ(0, 1)
         dis_p_contr_set = dis_p_contr.SetZ(0, 1)
         dis_v_contr_set = dis_v_contr.SetZ(0, 1)
@@ -29,7 +29,7 @@ def control(rastr: Dispatch, shablon_regime: Dispatch, criteria: str, AV=False):
         vetv = rastr.Tables('vetv')
         i_dop_ob = vetv.Cols('i_dop')
         i_dop_r = vetv.Cols('i_dop_r')
-        if AV:
+        if av:
             i_dop_ob = vetv.Cols('i_dop_ob')
             i_dop_r = vetv.Cols('i_dop_r_av')
         contr_i = vetv.Cols('contr_i')
