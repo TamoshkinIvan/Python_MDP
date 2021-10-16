@@ -26,7 +26,8 @@ def get_power_flow() -> float:
 
 
 # Утяжеление до конца, вычисление МДП по критерию
-def calculation_mdp(k_zap: float, contingency: Optional[DataFrame] = None):
+def calculation_mdp(
+        k_zap: float, contingency: Optional[DataFrame] = None) -> float:
     """
     Функция расчитывает предельный переток
     k_zap - коэффициент запаса
@@ -84,7 +85,7 @@ def csv_to_dict(path: str) -> [dict]:
     return dict_list
 
 
-def add_node_tr(node_num: int, recalc_tan: int) ->int:
+def add_node_tr(node_num: int, recalc_tan: int) -> int:
     """ Функция функция добавляет в таблицу траектрии узлы
     и устанавливает tg
     node_num - номер узла
