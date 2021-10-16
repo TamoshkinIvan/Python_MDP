@@ -85,8 +85,11 @@ gen_trajectory = gen_trajectory.rename(
         'value': 'pg_value',
         'tg': 'pg_tg'})
 
-vector = pd.merge(left=gen_trajectory, right=load_trajectory,
-                  left_on='node', right_on='node', how='outer').fillna(0)
+vector = pd.merge(left=gen_trajectory,
+                  right=load_trajectory,
+                  left_on='node',
+                  right_on='node',
+                  how='outer').fillna(0)
 
 # Таблица траектории утяжеления
 ut_node = rastr.Tables('ut_node')
