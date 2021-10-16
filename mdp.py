@@ -29,7 +29,6 @@ def calculation_mdp(k_zap: float, contingency: Optional[DataFrame]):
     Функция расчитывает предельный переток
     k_zap - коэффициент запаса
     row - отключаемый элемент
-    av - ПАР
     return - возвращает предельный переток по заданному критерию
     """
     rastr.rgm('p')
