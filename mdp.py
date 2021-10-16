@@ -6,6 +6,8 @@ import control
 import line_off
 from typing import Optional
 import csv
+import time
+start_time = time.time()
 shablon_regime = 'Shablons/режим.rg2'
 shablon_tracktoria = 'Shablons/траектория утяжеления.ut2'
 shablon_sechenia = 'Shablons/сечения.sch'
@@ -28,7 +30,7 @@ def calculation_mdp(k_zap: float, contingency: Optional[DataFrame] = None):
     """
     Функция расчитывает предельный переток
     k_zap - коэффициент запаса
-    row - отключаемый элемент
+    contingency - отключаемый элемент
     return - возвращает предельный переток по заданному критерию
     """
     rastr.rgm('p')
@@ -65,7 +67,6 @@ rastr.Load(1, 'regime/траектория утяжеления.ut2', shablon_tr
 # Загрузим файсл с сечением
 rastr.Save('regime/сечения.sch', shablon_sechenia)
 rastr.Load(1, 'regime/сечения.sch', shablon_sechenia)
-
 # Прочитаем файлы возмущений, сечения и траектории
 faults = pd.read_json('regime/faults.json').T
 flowgate = pd.read_json('regime/flowgate.json').T
@@ -73,7 +74,7 @@ vector = pd.read_csv('regime/vector.csv')
 
 
 def csv_to_dict(path: str) -> [dict]:
-    """ Parse .сsv to list of dictionaries"""
+    """ Функция производит парсинг сsv в словарь"""
     dict_list = []
     with open(path, newline='') as csv_data:
         csv_dic = csv.DictReader(csv_data)
@@ -83,7 +84,12 @@ def csv_to_dict(path: str) -> [dict]:
     return dict_list
 
 
-def add_node_tr(node_num: int, recalc_tan: int):
+def add_node_tr(node_num: int, recalc_tan: int) ->int:
+    """ Функция функция добавляет в таблицу траектрии узлы
+    и устанавливает tg
+    node_num - номер узла
+    recalc_tan - учет тангенса tg
+    """
     i = rastr.Tables('ut_node').size
     rastr.Tables('ut_node').AddRow()
     rastr.Tables('ut_node').Cols('ny').SetZ(i, node_num)
@@ -94,6 +100,7 @@ def add_node_tr(node_num: int, recalc_tan: int):
 def set_node_tr_param(node_id: int,
                       param: str,
                       value: float) -> None:
+    """ Функция функция добавляет в таблицу траектрии парамемты утяжеления"""
     rastr.Tables('ut_node').Cols(param).SetZ(node_id, value)
 
 
@@ -176,3 +183,4 @@ for index, contingency in faults.iterrows():
     # Определим значение перетока
     mdp_5_2.append(calculation_mdp(1, contingency))
 print("АДТН в послеаварийном режиме: " + str(min(mdp_5_2)))
+print("--- %s seconds ---" % (time.time() - start_time))
