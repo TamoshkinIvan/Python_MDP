@@ -18,4 +18,4 @@ def line_off(rastr: Dispatch, row: DataFrame):
     for i in range(vetv.Size):
         if ip.Z(i) == row['ip'] and iq.Z(
                 i) == row['iq'] and np.Z(i) == row['np']:
-            sta.SetZ(i, 1)
+            sta.SetZ(i, row['sta'])
