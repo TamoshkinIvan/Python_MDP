@@ -4,14 +4,14 @@ from win32com.client import Dispatch
 # Обнуление режима, выставление необходимого контроля по I или V, перенос
 # данных по току
 def control(rastr: Dispatch, shablon_regime: Dispatch,
-            criteria: str, av=False) -> None:
+            criteria: str, post_fault_mode=False) -> None:
     """
     Функция для выставления контролируемого параметра
     в процессе утяжеления
     rastr - рассчитываемый режим
     shablon_regime - шаблон режима
     criteria - критерий расчета
-    av - индикатор расчета для ПАР
+    post_fault_mode - индикатор расчета для ПАР
     """
     rastr.Load(1, 'regime/regime.rg2', shablon_regime)
     # Увеличим количество итераций
@@ -38,7 +38,7 @@ def control(rastr: Dispatch, shablon_regime: Dispatch,
         vetv = rastr.Tables('vetv')
         i_dop_ob = vetv.Cols('i_dop')
         i_dop_r = vetv.Cols('i_dop_r')
-        if av:
+        if post_fault_mode:
             i_dop_ob = vetv.Cols('i_dop_ob')
             i_dop_r = vetv.Cols('i_dop_r_av')
         contr_i = vetv.Cols('contr_i')
