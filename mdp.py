@@ -12,7 +12,7 @@ fluctuations = 30
 
 
 # Сбор данных по перетокам в сечении
-def collector_mdp() -> float:
+def get_power_flow() -> float:
     """
     функция определяет переток по сечению
     """
@@ -35,15 +35,15 @@ def calculation_mdp(k_zap: float, row: Optional[DataFrame], av: bool = False):
     rastr.rgm('p')
     if rastr.ut_utr('i') > 0:
         rastr.ut_utr('')
-    mdp = collector_mdp()
+    mdp = get_power_flow()
     if av:
-        tpf = collector_mdp()
+        tpf = get_power_flow()
         mdp *= k_zap
         toggle = rastr.GetToggle()
         j = 1
         while tpf > mdp:
             toggle.MoveOnPosition(len(toggle.GetPositions()) - j)
-            tpf = collector_mdp()
+            tpf = get_power_flow()
             j += 1
         vetv = rastr.Tables('vetv')
         vetv.SetSel('ip={_ip}&iq={_iq}&np={_np}'.format(_ip=row['ip'],
@@ -51,7 +51,7 @@ def calculation_mdp(k_zap: float, row: Optional[DataFrame], av: bool = False):
                                                         _np=row['np']))
         vetv.Cols('sta').Calc(0)
         rastr.rgm('p')
-        tpf = collector_mdp()
+        tpf = get_power_flow()
         return round(tpf - fluctuations)
     else:
         return round(mdp * k_zap - fluctuations)
