@@ -69,13 +69,9 @@ rastr.Save('regime/сечения.sch', shablon_sechenia)
 rastr.Load(1, 'regime/сечения.sch', shablon_sechenia)
 
 # Прочитаем файлы возмущений, сечения и траектории
-faults = pd.read_json('regime/faults.json')
-flowgate = pd.read_json('regime/flowgate.json')
+faults = pd.read_json('regime/faults.json').T
+flowgate = pd.read_json('regime/flowgate.json').T
 vector = pd.read_csv('regime/vector.csv')
-
-faults = faults.T
-flowgate = flowgate.T
-
 load_trajectory = vector[vector['variable'] == 'pn']
 load_trajectory = load_trajectory.rename(
     columns={
