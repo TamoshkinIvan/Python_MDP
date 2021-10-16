@@ -24,7 +24,7 @@ def get_power_flow() -> float:
 
 
 # Утяжеление до конца, вычисление МДП по критерию
-def calculation_mdp(k_zap: float, row: Optional[DataFrame], av: bool = False):
+def calculation_mdp(k_zap: float, contingency: Optional[DataFrame]):
     """
     Функция расчитывает предельный переток
     k_zap - коэффициент запаса
@@ -36,7 +36,7 @@ def calculation_mdp(k_zap: float, row: Optional[DataFrame], av: bool = False):
     if rastr.ut_utr('i') > 0:
         rastr.ut_utr('')
     mdp = get_power_flow()
-    if av:
+    if contingency is not None:
         tpf = get_power_flow()
         mdp *= k_zap
         toggle = rastr.GetToggle()
@@ -46,9 +46,9 @@ def calculation_mdp(k_zap: float, row: Optional[DataFrame], av: bool = False):
             tpf = get_power_flow()
             j += 1
         vetv = rastr.Tables('vetv')
-        vetv.SetSel('ip={_ip}&iq={_iq}&np={_np}'.format(_ip=row['ip'],
-                                                        _iq=row['iq'],
-                                                        _np=row['np']))
+        vetv.SetSel('ip={_ip}&iq={_iq}&np={_np}'.format(_ip=contingency['ip'],
+                                                        _iq=contingency['iq'],
+                                                        _np=contingency['np']))
         vetv.Cols('sta').Calc(0)
         rastr.rgm('p')
         tpf = get_power_flow()
@@ -144,12 +144,12 @@ print("15% Ucr запас в нормальном режиме: " + str(mdp_2))
 # по активной мощности в контролируемом сечении в
 # послеаварийных режимах после нормативных возмущений.
 mdp_3 = []
-for index, row in faults.iterrows():
+for index, contingency in faults.iterrows():
     control.control(rastr, shablon_regime, 'P')
     # Отключим линию
-    line_off.line_off(rastr, row)
+    line_off.line_off(rastr, contingency)
     # Определим значение перетока
-    mdp_3.append(calculation_mdp(0.92, row, True))
+    mdp_3.append(calculation_mdp(0.92, contingency))
 print("8% Pmax запас в послеаварийном режиме: " + str(min(mdp_3)))
 
 # Обеспечение нормативного коэффициента запаса статической
@@ -157,11 +157,11 @@ print("8% Pmax запас в послеаварийном режиме: " + str(
 # после нормативных возмущений.
 # Итерируемся по строкам в датафрейме с нормативными возмущениями
 mdp_4 = []
-for index, row in faults.iterrows():
-    control.control(rastr, shablon_regime, 'V', True)
-    line_off.line_off(rastr, row)
+for index, contingency in faults.iterrows():
+    control.control(rastr, shablon_regime, 'V')
+    line_off.line_off(rastr, contingency)
     # Определим значение перетока
-    mdp_4.append(calculation_mdp(1, row, True))
+    mdp_4.append(calculation_mdp(1, contingency))
 print("10% Ucr запас в послеаварийном режиме: " + str(min(mdp_4)))
 
 # Токое в норм схеме
@@ -173,9 +173,9 @@ print("ДДТН в нормальном режиме: " + str(mdp_5_1))
 # Токое в ПАр
 # Определим значение перетока
 mdp_5_2 = []
-for index, row in faults.iterrows():
-    control.control(rastr, shablon_regime, 'I', True)
-    line_off.line_off(rastr, row)
+for index, contingency in faults.iterrows():
+    control.control(rastr, shablon_regime, 'I')
+    line_off.line_off(rastr, contingency)
     # Определим значение перетока
-    mdp_5_2.append(calculation_mdp(1, row, True))
+    mdp_5_2.append(calculation_mdp(1, contingency))
 print("АДТН в послеаварийном режиме: " + str(min(mdp_5_2)))
