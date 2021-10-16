@@ -5,10 +5,12 @@ from pandas import DataFrame
 import control
 import line_off
 from typing import Optional
+import csv
 shablon_regime = 'Shablons/режим.rg2'
 shablon_tracktoria = 'Shablons/траектория утяжеления.ut2'
 shablon_sechenia = 'Shablons/сечения.sch'
 fluctuations = 30
+
 
 
 # Сбор данных по перетокам в сечении
@@ -54,9 +56,7 @@ def calculation_mdp(k_zap: float, contingency: Optional[DataFrame] = None):
     else:
         return round(mdp * k_zap - fluctuations)
 
-
 rastr = win32com.client.Dispatch("Astra.Rastr")
-
 # Загрузим файсл с режимом
 rastr.Load(1, 'regime/regime.rg2', shablon_regime)
 # Загрузим файсл с траекторией
@@ -70,45 +70,44 @@ rastr.Load(1, 'regime/сечения.sch', shablon_sechenia)
 faults = pd.read_json('regime/faults.json').T
 flowgate = pd.read_json('regime/flowgate.json').T
 vector = pd.read_csv('regime/vector.csv')
-load_trajectory = vector[vector['variable'] == 'pn']
-load_trajectory = load_trajectory.rename(
-    columns={
-        'variable': 'pn',
-        'value': 'pn_value',
-        'tg': 'pn_tg'})
-gen_trajectory = vector[vector['variable'] == 'pg']
-gen_trajectory = gen_trajectory.rename(
-    columns={
-        'variable': 'pg',
-        'value': 'pg_value',
-        'tg': 'pg_tg'})
 
-vector = pd.merge(left=gen_trajectory,
-                  right=load_trajectory,
-                  left_on='node',
-                  right_on='node',
-                  how='outer').fillna(0)
 
-# Таблица траектории утяжеления
-ut_node = rastr.Tables('ut_node')
-tip = ut_node.Cols('tip')
-ny = ut_node.Cols('ny')
-pn = ut_node.Cols('pn')
-pg = ut_node.Cols('pg')
-tg = ut_node.Cols('tg')
+def csv_to_dict(path: str) -> [dict]:
+    """ Parse .сsv to list of dictionaries"""
+    dict_list = []
+    with open(path, newline='') as csv_data:
+        csv_dic = csv.DictReader(csv_data)
+        # Creating empty list and adding dictionaries (rows)
+        for row in csv_dic:
+            dict_list.append(row)
+    return dict_list
 
-i = 0
-for index, row in vector.iterrows():
+
+def add_node_tr(node_num: int, recalc_tan: int):
+    i = rastr.Tables('ut_node').size
     rastr.Tables('ut_node').AddRow()
-    rastr.Tables('ut_node').Cols('ny').SetZ(i, row['node'])
-    if pd.notnull(row['pg']):
-        rastr.Tables('ut_node').Cols('pg').SetZ(i, row['pg_value'])
-        rastr.Tables('ut_node').Cols('tg').SetZ(i, row['pg_tg'])
-    if pd.notnull(row['pn']):
-        rastr.Tables('ut_node').Cols('pn').SetZ(i, row['pn_value'])
-        rastr.Tables('ut_node').Cols('tg').SetZ(i, row['pn_tg'])
-    i = i + 1
-rastr.Save('regime/траектория утяжеления1.ut2', shablon_tracktoria)
+    rastr.Tables('ut_node').Cols('ny').SetZ(i, node_num)
+    rastr.Tables('ut_node').Cols('tg').SetZ(i, recalc_tan)
+    return i
+
+
+def set_node_tr_param(node_id: int,
+                            param: str, value: float) -> None:
+    rastr.Tables('ut_node').Cols(param).SetZ(node_id, value)
+
+
+reader = csv_to_dict('regime/vector.csv')
+node_id_map = {}
+for row in reader:
+    node = row.get('node', 0)
+    if node not in node_id_map:
+        node_id = add_node_tr(node, row.get('tg', 0))
+        node_id_map[node] = node_id
+    else:
+        node_id = node_id_map[node]
+    variable = row.get('variable', 'pn')
+    set_node_tr_param(
+        node_id, variable, float(row.get('value', 0)))
 
 # Таблица сечений
 sechen = rastr.Tables('grline')
