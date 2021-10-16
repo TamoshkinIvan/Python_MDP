@@ -12,7 +12,6 @@ shablon_sechenia = 'Shablons/сечения.sch'
 fluctuations = 30
 
 
-
 # Сбор данных по перетокам в сечении
 def get_power_flow() -> float:
     """
@@ -56,6 +55,7 @@ def calculation_mdp(k_zap: float, contingency: Optional[DataFrame] = None):
     else:
         return round(mdp * k_zap - fluctuations)
 
+
 rastr = win32com.client.Dispatch("Astra.Rastr")
 # Загрузим файсл с режимом
 rastr.Load(1, 'regime/regime.rg2', shablon_regime)
@@ -92,7 +92,8 @@ def add_node_tr(node_num: int, recalc_tan: int):
 
 
 def set_node_tr_param(node_id: int,
-                            param: str, value: float) -> None:
+                      param: str,
+                      value: float) -> None:
     rastr.Tables('ut_node').Cols(param).SetZ(node_id, value)
 
 
