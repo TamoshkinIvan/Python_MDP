@@ -18,6 +18,8 @@ fluctuations = 30
 def get_power_flow() -> float:
     """
     функция определяет переток по сечению
+    return
+    mdp - предельный переток
     """
     mdp = 0
     for i in range(sechen.Size):
@@ -94,6 +96,7 @@ def add_node_tr(node_num: int, recalc_tan: int) -> int:
     и устанавливает tg
     node_num - номер узла
     recalc_tan - учет тангенса tg
+    return - i - номер строки в таблице утяжеления
     """
     i = rastr.Tables('ut_node').size
     rastr.Tables('ut_node').AddRow()
@@ -105,7 +108,7 @@ def add_node_tr(node_num: int, recalc_tan: int) -> int:
 def set_node_tr_param(node_id: int,
                       param: str,
                       value: float) -> None:
-    """ Функция функция добавляет в таблицу траектрии парамемты утяжеления
+    """ Функция функция добавляет в таблицу траектрии параметры утяжеления
         node_id - параметр узла
         param - Параметр утяжеления pg/pn
         value - Приращение pg/pn
