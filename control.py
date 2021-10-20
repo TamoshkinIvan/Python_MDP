@@ -22,17 +22,15 @@ def control(rastr: Dispatch, shablon_regime: Dispatch,
     dis_i_contr = ut_common.Cols('dis_i_contr')
     dis_p_contr = ut_common.Cols('dis_p_contr')
     dis_v_contr = ut_common.Cols('dis_v_contr')
+    enable_contr_set = enable_contr.SetZ(0, 1)
+    # Отключим контроль P
+    dis_p_contr_set = dis_p_contr.SetZ(0, 1)
     if criteria == 'V':
-        enable_contr_set = enable_contr.SetZ(0, 1)
         # Отключим контроль I
         dis_i_contr_set = dis_i_contr.SetZ(0, 1)
-        # Отключим контроль P
-        dis_p_contr_set = dis_p_contr.SetZ(0, 1)
         # Включим контроль V
         dis_v_contr_set = dis_v_contr.SetZ(0, 0)
     elif criteria == 'I':
-        enable_contr_set = enable_contr.SetZ(0, 1)
-        dis_p_contr_set = dis_p_contr.SetZ(0, 1)
         dis_v_contr_set = dis_v_contr.SetZ(0, 1)
         dis_i_contr_set = dis_i_contr.SetZ(0, 0)
         vetv = rastr.Tables('vetv')

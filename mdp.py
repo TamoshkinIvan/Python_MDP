@@ -75,7 +75,11 @@ vector = pd.read_csv('regime/vector.csv')
 
 
 def csv_to_dict(path: str) -> [dict]:
-    """ Функция производит парсинг сsv в словарь"""
+    """ Функция производит парсинг сsv в словарь
+        path - пусть к файлу с траектрией утяжеления
+        return
+        dict_list - траекторию утяжеления
+    """
     dict_list = []
     with open(path, newline='') as csv_data:
         csv_dic = csv.DictReader(csv_data)
@@ -101,7 +105,12 @@ def add_node_tr(node_num: int, recalc_tan: int) -> int:
 def set_node_tr_param(node_id: int,
                       param: str,
                       value: float) -> None:
-    """ Функция функция добавляет в таблицу траектрии парамемты утяжеления"""
+    """ Функция функция добавляет в таблицу траектрии парамемты утяжеления
+        node_id - параметр узла
+        param - Параметр утяжеления pg/pn
+        value - Приращение pg/pn
+        return - None
+    """
     rastr.Tables('ut_node').Cols(param).SetZ(node_id, value)
 
 
