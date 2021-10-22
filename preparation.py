@@ -1,4 +1,6 @@
+import win32com.client
 from win32com.client import Dispatch
+import csv
 
 
 # Обнуление режима, выставление необходимого контроля по I или V, перенос
@@ -46,3 +48,45 @@ def control(rastr: Dispatch, shablon_regime: Dispatch,
             i_dop_ob.SetZ(i, i_dop_r.Z(i))
             if i_dop_ob.Z(i) != 0:
                 contr_i.SetZ(i, 1)
+
+
+def csv_to_dict(path: str) -> [dict]:
+    """ Функция производит парсинг сsv в словарь
+        path - пусть к файлу с траектрией утяжеления
+        return
+        dict_list - траекторию утяжеления
+    """
+    dict_list = []
+    with open(path, newline='') as csv_data:
+        csv_dic = csv.DictReader(csv_data)
+        # Creating empty list and adding dictionaries (rows)
+        for row in csv_dic:
+            dict_list.append(row)
+    return dict_list
+
+
+def add_node_tr(rastr: Dispatch, node_num: int, recalc_tan: int) -> int:
+    """ Функция функция добавляет в таблицу траектрии узлы
+    и устанавливает tg
+    node_num - номер узла
+    recalc_tan - учет тангенса tg
+    return - i - номер строки в таблице утяжеления
+    """
+    i = rastr.Tables('ut_node').size
+    rastr.Tables('ut_node').AddRow()
+    rastr.Tables('ut_node').Cols('ny').SetZ(i, node_num)
+    rastr.Tables('ut_node').Cols('tg').SetZ(i, recalc_tan)
+    return i
+
+
+def set_node_tr_param(rastr: Dispatch,
+                      node_id: int,
+                      param: str,
+                      value: float) -> None:
+    """ Функция функция добавляет в таблицу траектрии параметры утяжеления
+        node_id - параметр узла
+        param - Параметр утяжеления pg/pn
+        value - Приращение pg/pn
+        return - None
+    """
+    rastr.Tables('ut_node').Cols(param).SetZ(node_id, value)
