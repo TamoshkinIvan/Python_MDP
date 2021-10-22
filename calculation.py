@@ -64,5 +64,4 @@ def calculation_mdp(rastr: Dispatch, fluctuations:float, sechen: Dispatch,
         rastr.rgm('p')
         tpf = get_power_flow(sechen)
         return round(tpf - fluctuations)
-    else:
-        return round(mdp * k_zap - fluctuations)
+    return round(mdp * k_zap - fluctuations)
