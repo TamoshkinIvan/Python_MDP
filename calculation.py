@@ -4,7 +4,7 @@ from win32com.client import Dispatch
 from typing import Optional
 
 
-def line_off(rastr: Dispatch, row: DataFrame):
+def line_off(rastr: Dispatch, row: DataFrame)  -> None:
     """
     Функция используемая для отключения линий
     rastr - рассчитываемый режим
@@ -26,7 +26,7 @@ def line_off(rastr: Dispatch, row: DataFrame):
 def get_power_flow(sechen: Dispatch) -> float:
     """
     функция определяет переток по сечению
-    return
+    return:
     mdp - предельный переток
     """
     mdp = 0
@@ -64,5 +64,4 @@ def calculation_mdp(rastr: Dispatch, fluctuations:float, sechen: Dispatch,
         rastr.rgm('p')
         tpf = get_power_flow(sechen)
         return round(tpf - fluctuations)
-    else:
-        return round(mdp * k_zap - fluctuations)
+    return round(mdp * k_zap - fluctuations)
