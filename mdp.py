@@ -75,7 +75,8 @@ if __name__ == '__main__':
         # Отключим линию
         calculation.line_off(rastr, contingency)
         # Определим значение перетока
-        mdp_3.append(calculation.calculation_mdp(rastr, fluctuations, sechen, 0.92, contingency))
+        mdp_3.append(calculation.calculation_mdp(rastr, fluctuations,
+                                                 sechen, 0.92, contingency))
     print("8% Pmax запас в послеаварийном режиме: " + str(min(mdp_3)))
 
     # Обеспечение нормативного коэффициента запаса статической
@@ -87,7 +88,9 @@ if __name__ == '__main__':
         preparation.control(rastr, shablon_regime, 'V')
         calculation.line_off(rastr, contingency)
         # Определим значение перетока
-        mdp_4.append(calculation.calculation_mdp(rastr, fluctuations, sechen, 1, contingency))
+        mdp_4.append(calculation.calculation_mdp(rastr,
+                                                 fluctuations,
+                                                 sechen, 1, contingency))
     print("10% Ucr запас в послеаварийном режиме: " + str(min(mdp_4)))
 
     # Токое в норм схеме
@@ -103,6 +106,8 @@ if __name__ == '__main__':
         preparation.control(rastr, shablon_regime, 'I', True)
         calculation.line_off(rastr, contingency)
         # Определим значение перетока
-        mdp_5_2.append(calculation.calculation_mdp(rastr, fluctuations, sechen, 1, contingency))
+        mdp_5_2.append(calculation.calculation_mdp(rastr,
+                                                   fluctuations,
+                                                   sechen, 1, contingency))
     print("АДТН в послеаварийном режиме: " + str(min(mdp_5_2)))
     print("--- %s seconds ---" % (time.time() - start_time))
