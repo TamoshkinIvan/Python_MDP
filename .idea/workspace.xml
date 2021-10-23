@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="80a53af5-564d-447a-ab63-5a4fc094b07e" name="Changes" comment="Вынесение функций в отдельные модули">
+    <list default="true" id="80a53af5-564d-447a-ab63-5a4fc094b07e" name="Changes" comment="if __name__ == '__main__':">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mdp.py" beforeDir="false" afterPath="$PROJECT_DIR$/mdp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/preparation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +29,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Ratr/Intro" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">
@@ -98,7 +99,14 @@
       <option name="project" value="LOCAL" />
       <updated>1634888770917</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="if __name__ == '__main__':">
+      <created>1634889085782</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1634889085782</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -128,6 +136,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="1" />
     <MESSAGE value="Вынесение функций в отдельные модули" />
-    <option name="LAST_COMMIT_MESSAGE" value="Вынесение функций в отдельные модули" />
+    <MESSAGE value="if __name__ == '__main__':" />
+    <option name="LAST_COMMIT_MESSAGE" value="if __name__ == '__main__':" />
   </component>
 </project>

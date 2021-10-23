@@ -32,6 +32,16 @@ def control(rastr: Dispatch, shablon_regime: Dispatch,
         dis_i_contr_set = dis_i_contr.SetZ(0, 1)
         # Включим контроль V
         dis_v_contr_set = dis_v_contr.SetZ(0, 0)
+        nodes = rastr.Tables('node')
+        for i in range(nodes.Size):
+            if nodes.Cols('tip').Z(i) == 1:
+                u_kr = nodes.Cols('uhom').Z(i) * 0.7
+                if post_fault_mode:
+                    u_min = u_kr * 1.1
+                else:
+                    u_min = u_kr * 1.15
+                nodes.Cols('umin').SetZ(i, u_min)
+                nodes.Cols('contr_v').SetZ(i, 1)
     elif criteria == 'I':
         dis_v_contr_set = dis_v_contr.SetZ(0, 1)
         dis_i_contr_set = dis_i_contr.SetZ(0, 0)

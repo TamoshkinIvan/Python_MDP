@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # Итерируемся по строкам в датафрейме с нормативными возмущениями
     mdp_4 = []
     for index, contingency in faults.iterrows():
-        preparation.control(rastr, shablon_regime, 'V')
+        preparation.control(rastr, shablon_regime, 'V', True)
         calculation.line_off(rastr, contingency)
         # Определим значение перетока
         mdp_4.append(calculation.calculation_mdp(rastr, fluctuations, sechen, 1, contingency))
