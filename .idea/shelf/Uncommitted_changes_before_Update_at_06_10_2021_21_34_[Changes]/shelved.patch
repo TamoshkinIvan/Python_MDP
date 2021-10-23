@@ -1,0 +1,338 @@
+Index: Form.ui
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<ui version=\"4.0\">\r\n <class>MainWindow</class>\r\n <widget class=\"QMainWindow\" name=\"MainWindow\">\r\n  <property name=\"geometry\">\r\n   <rect>\r\n    <x>0</x>\r\n    <y>0</y>\r\n    <width>737</width>\r\n    <height>395</height>\r\n   </rect>\r\n  </property>\r\n  <property name=\"windowTitle\">\r\n   <string>MainWindow</string>\r\n  </property>\r\n  <widget class=\"QWidget\" name=\"centralwidget\">\r\n   <widget class=\"QPushButton\" name=\"pushButton\">\r\n    <property name=\"geometry\">\r\n     <rect>\r\n      <x>40</x>\r\n      <y>10</y>\r\n      <width>221</width>\r\n      <height>91</height>\r\n     </rect>\r\n    </property>\r\n    <property name=\"text\">\r\n     <string>Начать утяжеление!!!!!!</string>\r\n    </property>\r\n   </widget>\r\n   <widget class=\"QTableWidget\" name=\"tableWidget_2\">\r\n    <property name=\"geometry\">\r\n     <rect>\r\n      <x>40</x>\r\n      <y>110</y>\r\n      <width>231</width>\r\n      <height>241</height>\r\n     </rect>\r\n    </property>\r\n    <row>\r\n     <property name=\"text\">\r\n      <string>1)</string>\r\n     </property>\r\n    </row>\r\n    <row>\r\n     <property name=\"text\">\r\n      <string>2)</string>\r\n     </property>\r\n    </row>\r\n    <row>\r\n     <property name=\"text\">\r\n      <string>3)</string>\r\n     </property>\r\n    </row>\r\n    <row>\r\n     <property name=\"text\">\r\n      <string>4)</string>\r\n     </property>\r\n    </row>\r\n    <row>\r\n     <property name=\"text\">\r\n      <string>5)</string>\r\n     </property>\r\n    </row>\r\n    <row>\r\n     <property name=\"text\">\r\n      <string>6)</string>\r\n     </property>\r\n    </row>\r\n    <row>\r\n     <property name=\"text\">\r\n      <string/>\r\n     </property>\r\n    </row>\r\n    <column>\r\n     <property name=\"text\">\r\n      <string>Критерии</string>\r\n     </property>\r\n    </column>\r\n    <column>\r\n     <property name=\"text\">\r\n      <string>Значение МДП</string>\r\n     </property>\r\n    </column>\r\n    <item row=\"0\" column=\"0\">\r\n     <property name=\"text\">\r\n      <string>Статика ДАР</string>\r\n     </property>\r\n    </item>\r\n    <item row=\"1\" column=\"0\">\r\n     <property name=\"text\">\r\n      <string>Статика ПАР</string>\r\n     </property>\r\n    </item>\r\n    <item row=\"2\" column=\"0\">\r\n     <property name=\"text\">\r\n      <string>Ток ДАР</string>\r\n     </property>\r\n    </item>\r\n    <item row=\"3\" column=\"0\">\r\n     <property name=\"text\">\r\n      <string>Ток ПАР</string>\r\n     </property>\r\n    </item>\r\n    <item row=\"4\" column=\"0\">\r\n     <property name=\"text\">\r\n      <string>Напряжение ДАР</string>\r\n     </property>\r\n    </item>\r\n    <item row=\"5\" column=\"0\">\r\n     <property name=\"text\">\r\n      <string>Напряжение ПАР</string>\r\n     </property>\r\n    </item>\r\n    <item row=\"6\" column=\"0\">\r\n     <property name=\"text\">\r\n      <string>Итого (наименьший):</string>\r\n     </property>\r\n    </item>\r\n   </widget>\r\n  </widget>\r\n  <widget class=\"QMenuBar\" name=\"menubar\">\r\n   <property name=\"geometry\">\r\n    <rect>\r\n     <x>0</x>\r\n     <y>0</y>\r\n     <width>737</width>\r\n     <height>21</height>\r\n    </rect>\r\n   </property>\r\n   <widget class=\"QMenu\" name=\"menu\">\r\n    <property name=\"title\">\r\n     <string>Файл</string>\r\n    </property>\r\n    <widget class=\"QMenu\" name=\"menu_2\">\r\n     <property name=\"title\">\r\n      <string>Открыть...</string>\r\n     </property>\r\n     <addaction name=\"action_rg2\"/>\r\n     <addaction name=\"action_sch\"/>\r\n     <addaction name=\"action_ut2\"/>\r\n    </widget>\r\n    <addaction name=\"menu_2\"/>\r\n    <addaction name=\"separator\"/>\r\n    <addaction name=\"action_7\"/>\r\n   </widget>\r\n   <addaction name=\"menu\"/>\r\n  </widget>\r\n  <widget class=\"QStatusBar\" name=\"statusbar\"/>\r\n  <action name=\"action_rg2\">\r\n   <property name=\"text\">\r\n    <string>Режим (*.rg2)</string>\r\n   </property>\r\n  </action>\r\n  <action name=\"action_sch\">\r\n   <property name=\"text\">\r\n    <string>Сечения (*.sch)</string>\r\n   </property>\r\n  </action>\r\n  <action name=\"action_ut2\">\r\n   <property name=\"text\">\r\n    <string>Траектория (*.ut2)</string>\r\n   </property>\r\n  </action>\r\n  <action name=\"action_7\">\r\n   <property name=\"text\">\r\n    <string>Сохранить</string>\r\n   </property>\r\n  </action>\r\n </widget>\r\n <resources/>\r\n <connections/>\r\n</ui>\r\n
+===================================================================
+diff --git a/Form.ui b/Form.ui
+--- a/Form.ui	
++++ b/Form.ui	
+@@ -6,21 +6,24 @@
+    <rect>
+     <x>0</x>
+     <y>0</y>
+-    <width>737</width>
+-    <height>395</height>
++    <width>661</width>
++    <height>612</height>
+    </rect>
+   </property>
+   <property name="windowTitle">
+    <string>MainWindow</string>
+   </property>
+   <widget class="QWidget" name="centralwidget">
+-   <widget class="QPushButton" name="pushButton">
++   <widget class="QPushButton" name="Button1">
++    <property name="enabled">
++     <bool>false</bool>
++    </property>
+     <property name="geometry">
+      <rect>
+-      <x>40</x>
+-      <y>10</y>
++      <x>30</x>
++      <y>250</y>
+       <width>221</width>
+-      <height>91</height>
++      <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+@@ -30,9 +33,9 @@
+    <widget class="QTableWidget" name="tableWidget_2">
+     <property name="geometry">
+      <rect>
+-      <x>40</x>
+-      <y>110</y>
+-      <width>231</width>
++      <x>30</x>
++      <y>310</y>
++      <width>501</width>
+       <height>241</height>
+      </rect>
+     </property>
+@@ -117,13 +120,208 @@
+      </property>
+     </item>
+    </widget>
++   <widget class="QLabel" name="label1">
++    <property name="geometry">
++     <rect>
++      <x>20</x>
++      <y>30</y>
++      <width>191</width>
++      <height>16</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>Файл с шаблоном режима загружен:</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label2">
++    <property name="geometry">
++     <rect>
++      <x>210</x>
++      <y>30</y>
++      <width>47</width>
++      <height>13</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Нет&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label5">
++    <property name="geometry">
++     <rect>
++      <x>20</x>
++      <y>60</y>
++      <width>191</width>
++      <height>16</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>Файл с шаблоном сечений загружен:</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label6">
++    <property name="geometry">
++     <rect>
++      <x>210</x>
++      <y>60</y>
++      <width>47</width>
++      <height>13</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Нет&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label9">
++    <property name="geometry">
++     <rect>
++      <x>20</x>
++      <y>90</y>
++      <width>211</width>
++      <height>16</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>Файл с шаблоном траекторий загружен:</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label10">
++    <property name="geometry">
++     <rect>
++      <x>230</x>
++      <y>90</y>
++      <width>47</width>
++      <height>13</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Нет&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label15">
++    <property name="geometry">
++     <rect>
++      <x>170</x>
++      <y>180</y>
++      <width>241</width>
++      <height>41</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#aa0000;&quot;&gt;Для доступа к утяжелению Вам необходимо &lt;br/&gt;подгрузить все необходимые файлы&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label3">
++    <property name="geometry">
++     <rect>
++      <x>310</x>
++      <y>30</y>
++      <width>191</width>
++      <height>16</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>Файл с режимом загружен:</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label7">
++    <property name="geometry">
++     <rect>
++      <x>310</x>
++      <y>60</y>
++      <width>191</width>
++      <height>16</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>Файл с сечениями загружен:</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label11">
++    <property name="geometry">
++     <rect>
++      <x>310</x>
++      <y>90</y>
++      <width>191</width>
++      <height>16</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>Файл с траекториями загружен:</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label13">
++    <property name="geometry">
++     <rect>
++      <x>310</x>
++      <y>130</y>
++      <width>191</width>
++      <height>16</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>Файл с возмущениями загружен:</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label4">
++    <property name="geometry">
++     <rect>
++      <x>460</x>
++      <y>30</y>
++      <width>47</width>
++      <height>13</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Нет&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label8">
++    <property name="geometry">
++     <rect>
++      <x>470</x>
++      <y>60</y>
++      <width>47</width>
++      <height>13</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Нет&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label12">
++    <property name="geometry">
++     <rect>
++      <x>480</x>
++      <y>90</y>
++      <width>47</width>
++      <height>13</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Нет&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="label14">
++    <property name="geometry">
++     <rect>
++      <x>480</x>
++      <y>130</y>
++      <width>47</width>
++      <height>13</height>
++     </rect>
++    </property>
++    <property name="text">
++     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Нет&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++    </property>
++   </widget>
+   </widget>
+   <widget class="QMenuBar" name="menubar">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+-     <width>737</width>
++     <width>661</width>
+      <height>21</height>
+     </rect>
+    </property>
+@@ -135,9 +333,18 @@
+      <property name="title">
+       <string>Открыть...</string>
+      </property>
+-     <addaction name="action_rg2"/>
++     <addaction name="ActionShRegim"/>
+      <addaction name="action_sch"/>
+-     <addaction name="action_ut2"/>
++     <addaction name="separator"/>
++     <addaction name="action_3"/>
++     <addaction name="action_4"/>
++     <addaction name="separator"/>
++     <addaction name="action_6"/>
++     <addaction name="action_8"/>
++     <addaction name="separator"/>
++     <addaction name="action_10"/>
++     <addaction name="separator"/>
++     <addaction name="action_12"/>
+     </widget>
+     <addaction name="menu_2"/>
+     <addaction name="separator"/>
+@@ -146,14 +353,14 @@
+    <addaction name="menu"/>
+   </widget>
+   <widget class="QStatusBar" name="statusbar"/>
+-  <action name="action_rg2">
++  <action name="ActionShRegim">
+    <property name="text">
+-    <string>Режим (*.rg2)</string>
++    <string>Шаблон режима (*.rg2)</string>
+    </property>
+   </action>
+   <action name="action_sch">
+    <property name="text">
+-    <string>Сечения (*.sch)</string>
++    <string>Режим (*.rg2)</string>
+    </property>
+   </action>
+   <action name="action_ut2">
+@@ -164,6 +371,36 @@
+   <action name="action_7">
+    <property name="text">
+     <string>Сохранить</string>
++   </property>
++  </action>
++  <action name="action_3">
++   <property name="text">
++    <string>Шаблон сечений (*.sch)</string>
++   </property>
++  </action>
++  <action name="action_4">
++   <property name="text">
++    <string>Сечения (*.json)</string>
++   </property>
++  </action>
++  <action name="action_6">
++   <property name="text">
++    <string>Шаблон траекторий (*.ut2)</string>
++   </property>
++  </action>
++  <action name="action_8">
++   <property name="text">
++    <string>Траектории (.csv)</string>
++   </property>
++  </action>
++  <action name="action_10">
++   <property name="text">
++    <string>Возмущения (.json)</string>
++   </property>
++  </action>
++  <action name="action_12">
++   <property name="text">
++    <string>Собаку</string>
+    </property>
+   </action>
+  </widget>
